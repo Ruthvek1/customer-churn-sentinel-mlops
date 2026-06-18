@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual Environment
+venv/
+env/
+.venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data (download via script, don't commit large files)
+data/raw/
+data/processed/
+data/reference/
+*.csv
+!config/*.yaml
+
+# Model artifacts (generated, not committed)
+models/*.joblib
+models/*.pkl
+models/*.json
+!models/.gitkeep
+
+# Logs
+logs/*.log
+logs/*.json
+!logs/.gitkeep
+
+# Database
+*.db
+*.sqlite3
+
+# Drift reports
+drift_reports/
+*.html
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
