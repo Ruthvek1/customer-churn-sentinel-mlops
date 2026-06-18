@@ -35,46 +35,46 @@ Most ML projects stop at `model.fit()`. This one goes further:
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        DATA LAYER                               │
-│  Telco Churn Dataset → Preprocessing → Feature Engineering      │
-│                              ↓                                  │
-│                    Reference Dataset (for drift)                │
-└──────────────────────────────┬──────────────────────────────────┘
-                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│                         ML LAYER                                │
-│  XGBoost Classifier ← Hyperparameter Tuning (RandomizedSearchCV)│
-│         ↓                                                       │
-│  Model Artifact (.joblib) + Experiment Logs (JSON)              │
-└──────────────────────────────┬──────────────────────────────────┘
-                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│                      SERVING LAYER                              │
-│  FastAPI Backend                                                │
-│  ├── POST /predictions/predict     → Single prediction          │
-│  ├── POST /predictions/predict/batch → Batch predictions        │
-│  ├── GET  /drift/report            → Run drift detection        │
-│  ├── POST /retrain                 → Trigger retraining         │
-│  └── GET  /health                  → System health check        │
-└──────────────────────────────┬──────────────────────────────────┘
-                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│                    MONITORING LAYER                              │
-│  Prediction Logger (SQLite) → Drift Detector (Evidently AI)     │
-│         ↓                              ↓                        │
-│  Prediction History           Alert Manager → Retrain Trigger   │
-└──────────────────────────────┬──────────────────────────────────┘
-                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│                     DASHBOARD LAYER                             │
-│  Streamlit Multi-Page App                                       │
-│  ├── 📊 Live Predictions    (input form + gauge chart)          │
-│  ├── 🔍 Drift Monitor       (per-feature drift analysis)       │
-│  ├── 📈 Model Performance   (ROC curve + confusion matrix)     │
-│  └── 🔧 Retrain Control     (manual retrain + version history) │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph "Data Layer"
+        A[("📦 Telco Churn Dataset<br/>(Kaggle)")] --> B["🔄 Data Pipeline<br/>(Preprocessing)"]
+        B --> C[("💾 Processed Data<br/>+ Reference Dataset")]
+    end
+
+    subgraph "ML Layer"
+        C --> D["🧠 Model Training<br/>(XGBoost)"]
+        D --> E[("📁 Model Artifacts<br/>(joblib)")]
+        D --> F["📊 Experiment Tracking<br/>(MLflow-style logs)"]
+    end
+
+    subgraph "Serving Layer"
+        E --> G["⚡ FastAPI Backend"]
+        G --> H["🔮 /predict endpoint"]
+        G --> I["📈 /drift-report endpoint"]
+        G --> J["🔁 /retrain endpoint"]
+        G --> K["❤️ /health endpoint"]
+    end
+
+    subgraph "Monitoring Layer"
+        H -->|"logs predictions"| L[("📋 Prediction Log<br/>(SQLite)")]
+        L --> M["🔍 Drift Detector<br/>(Evidently AI)"]
+        M -->|"drift detected"| N["⚠️ Alert + Retrain Trigger"]
+        N --> D
+    end
+
+    subgraph "Dashboard Layer"
+        G --> O["📊 Streamlit Dashboard"]
+        O --> P["Live Predictions"]
+        O --> Q["Drift Monitoring"]
+        O --> R["Model Performance"]
+        O --> S["Retraining Controls"]
+    end
+
+    subgraph "Deployment"
+        T["🐳 Docker Compose"] --> G
+        T --> O
+    end
 ```
 
 ---

@@ -56,6 +56,48 @@ This demonstrates understanding of **why models fail in production** — they do
 
 ## 2. System Architecture
 
+```mermaid
+graph TB
+    subgraph "Data Layer"
+        A[("📦 Telco Churn Dataset<br/>(Kaggle)")] --> B["🔄 Data Pipeline<br/>(Preprocessing)"]
+        B --> C[("💾 Processed Data<br/>+ Reference Dataset")]
+    end
+
+    subgraph "ML Layer"
+        C --> D["🧠 Model Training<br/>(XGBoost)"]
+        D --> E[("📁 Model Artifacts<br/>(joblib)")]
+        D --> F["📊 Experiment Tracking<br/>(MLflow-style logs)"]
+    end
+
+    subgraph "Serving Layer"
+        E --> G["⚡ FastAPI Backend"]
+        G --> H["🔮 /predict endpoint"]
+        G --> I["📈 /drift-report endpoint"]
+        G --> J["🔁 /retrain endpoint"]
+        G --> K["❤️ /health endpoint"]
+    end
+
+    subgraph "Monitoring Layer"
+        H -->|"logs predictions"| L[("📋 Prediction Log<br/>(SQLite)")]
+        L --> M["🔍 Drift Detector<br/>(Evidently AI)"]
+        M -->|"drift detected"| N["⚠️ Alert + Retrain Trigger"]
+        N --> D
+    end
+
+    subgraph "Dashboard Layer"
+        G --> O["📊 Streamlit Dashboard"]
+        O --> P["Live Predictions"]
+        O --> Q["Drift Monitoring"]
+        O --> R["Model Performance"]
+        O --> S["Retraining Controls"]
+    end
+
+    subgraph "Deployment"
+        T["🐳 Docker Compose"] --> G
+        T --> O
+    end
+```
+
 ### Design Principles
 
 1. **Separation of Concerns:** Each component (data, model, API, monitoring) is isolated in its own module. You can swap XGBoost for LightGBM without touching the API code.
