@@ -232,7 +232,7 @@ st.markdown("---")
 # Navigation cards
 st.markdown("### 📌 Navigate to")
 
-nav_col1, nav_col2, nav_col3, nav_col4 = st.columns(4)
+nav_col1, nav_col2, nav_col3, nav_col4, nav_col5 = st.columns(5)
 
 with nav_col1:
     st.markdown("""
@@ -263,6 +263,14 @@ with nav_col4:
     <div class="dashboard-card">
         <h3>🔧 Retrain Control</h3>
         <p style="color: #94a3b8;">Manual retraining & versioning</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with nav_col5:
+    st.markdown("""
+    <div class="dashboard-card">
+        <h3>💡 Layman Guide</h3>
+        <p style="color: #94a3b8;">Simple explanation of the model</p>
     </div>
     """, unsafe_allow_html=True)
 
