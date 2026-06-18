@@ -1,0 +1,60 @@
+# ============================================================
+# Docker Compose — One-Command Deployment
+# ============================================================
+# Usage:
+#   docker-compose up --build
+#
+# Services:
+#   - api:       FastAPI backend on port 8000
+#   - dashboard: Streamlit frontend on port 8501
+# ============================================================
+
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: churn-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./logs:/app/logs
+      - ./drift_reports:/app/drift_reports
+      - ./config:/app/config
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: churn-dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./logs:/app/logs
+      - ./drift_reports:/app/drift_reports
+      - ./config:/app/config
+    environment:
+      - PYTHONPATH=/app
+      - API_URL=http://api:8000
+    command: streamlit run dashboard/app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
