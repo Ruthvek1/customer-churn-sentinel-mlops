@@ -80,6 +80,18 @@ class DriftDetector:
         self.report_dir.mkdir(parents=True, exist_ok=True)
         
         self._load_reference()
+        
+        # Load preprocessing metadata
+        import joblib
+        metadata_path = Path(self.config["data"]["processed_dir"]) / "preprocessing_metadata.joblib"
+        if metadata_path.exists():
+            self.metadata = joblib.load(metadata_path)
+            self.feature_names = self.metadata.get("feature_names", [])
+            self.encoding_map = self.metadata.get("encoding_map", {})
+        else:
+            self.metadata = None
+            self.feature_names = None
+            self.encoding_map = None
     
     def _load_reference(self):
         """Load reference dataset (training data distribution)."""
@@ -141,6 +153,23 @@ class DriftDetector:
                 "error": f"Need at least {self.drift_config['min_samples']} samples, got {len(current_data)}"
             }
         
+        # Preprocess current data to match reference schema if metadata is available
+        is_raw_customer_data = "gender" in current_data.columns and "MonthlyCharges" in current_data.columns
+        if self.feature_names and is_raw_customer_data:
+            try:
+                current_data = self._preprocess_current_data(current_data)
+            except Exception as e:
+                logger.error("current_data_preprocessing_failed", error=str(e))
+                return {
+                    "is_drifted": False,
+                    "drift_score": 0.0,
+                    "drifted_features": [],
+                    "feature_drift_details": {},
+                    "report_path": None,
+                    "timestamp": datetime.now().isoformat(),
+                    "error": f"Failed to preprocess current data: {str(e)}"
+                }
+
         # Align columns between reference and current data
         common_columns = list(
             set(self.reference_data.columns) & set(current_data.columns)
@@ -300,3 +329,29 @@ class DriftDetector:
             self.reference_path = Path(reference_path)
         self._load_reference()
         logger.info("reference_data_reloaded")
+
+    def _preprocess_current_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Preprocess raw prediction data to match reference data schema."""
+        df = df.copy()
+        
+        # Clean
+        df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce").fillna(0)
+        if "customerID" in df.columns:
+            df = df.drop(columns=["customerID"])
+        if "Churn" in df.columns:
+            df = df.drop(columns=["Churn"])
+            
+        # Feature engineering
+        from src.data.preprocess import engineer_features, encode_features
+        df = engineer_features(df)
+        
+        # Encode
+        df, _ = encode_features(df)
+        
+        # Align columns
+        for col in self.feature_names:
+            if col not in df.columns:
+                df[col] = 0
+                
+        df = df[self.feature_names]
+        return df

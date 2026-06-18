@@ -1,4 +1,4 @@
-# 📖 Technical Documentation — MLOps Churn Sentinel
+# 📖 Technical Documentation — Customer Churn Sentinel MLOps
 
 ## Customer Churn Prediction System — Deep Dive
 
