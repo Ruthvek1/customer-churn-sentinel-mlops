@@ -1,0 +1,138 @@
+# ============================================================
+# End-to-End ML System Configuration
+# ============================================================
+
+project:
+  name: "churn-prediction-system"
+  version: "1.0.0"
+  description: "End-to-end ML system with drift monitoring for customer churn prediction"
+
+# --- Data Configuration ---
+data:
+  raw_path: "data/raw/telco_churn.csv"
+  processed_dir: "data/processed"
+  reference_path: "data/reference/reference_data.csv"
+  test_size: 0.2
+  random_state: 42
+  target_column: "Churn"
+
+  # Kaggle dataset info
+  kaggle_dataset: "blastchar/telco-customer-churn"
+  
+  # Feature groups
+  categorical_features:
+    - "gender"
+    - "Partner"
+    - "Dependents"
+    - "PhoneService"
+    - "MultipleLines"
+    - "InternetService"
+    - "OnlineSecurity"
+    - "OnlineBackup"
+    - "DeviceProtection"
+    - "TechSupport"
+    - "StreamingTV"
+    - "StreamingMovies"
+    - "Contract"
+    - "PaperlessBilling"
+    - "PaymentMethod"
+
+  numerical_features:
+    - "tenure"
+    - "MonthlyCharges"
+    - "TotalCharges"
+
+  id_column: "customerID"
+
+# --- Model Configuration ---
+model:
+  save_dir: "models"
+  model_name: "xgboost_churn_model"
+  
+  # XGBoost hyperparameters
+  params:
+    n_estimators: 300
+    max_depth: 6
+    learning_rate: 0.1
+    subsample: 0.8
+    colsample_bytree: 0.8
+    min_child_weight: 3
+    gamma: 0.1
+    reg_alpha: 0.1
+    reg_lambda: 1.0
+    scale_pos_weight: 2.5  # Handle class imbalance
+    random_state: 42
+    eval_metric: "logloss"
+    use_label_encoder: false
+
+  # Hyperparameter tuning search space
+  tuning:
+    enabled: true
+    n_iter: 20
+    cv_folds: 5
+    scoring: "roc_auc"
+    param_distributions:
+      n_estimators: [100, 200, 300, 500]
+      max_depth: [3, 4, 5, 6, 8]
+      learning_rate: [0.01, 0.05, 0.1, 0.2]
+      subsample: [0.6, 0.7, 0.8, 0.9, 1.0]
+      colsample_bytree: [0.6, 0.7, 0.8, 0.9, 1.0]
+      min_child_weight: [1, 3, 5, 7]
+
+# --- API Configuration ---
+api:
+  host: "0.0.0.0"
+  port: 8000
+  title: "Churn Prediction API"
+  description: "Production ML API with drift monitoring and automated retraining"
+  version: "1.0.0"
+  cors_origins:
+    - "http://localhost:8501"  # Streamlit
+    - "http://localhost:3000"  # Dev frontend
+    - "*"
+
+# --- Monitoring Configuration ---
+monitoring:
+  # Prediction logging
+  db_path: "logs/predictions.db"
+  
+  # Drift detection
+  drift:
+    # Minimum predictions before running drift check
+    min_samples: 30
+    
+    # Drift detection method thresholds
+    # KS test p-value threshold (below this = drift detected)
+    ks_threshold: 0.05
+    
+    # Share of drifted features to flag overall drift
+    feature_drift_threshold: 0.5
+    
+    # How often to auto-check drift (in predictions count)
+    check_interval: 50
+    
+    # Report storage
+    report_dir: "drift_reports"
+
+  # Retraining
+  retrain:
+    # Auto-retrain when drift is detected
+    auto_retrain: true
+    
+    # Minimum time between retrains (seconds)
+    cooldown_seconds: 3600
+    
+    # Keep N previous model versions
+    keep_versions: 5
+
+# --- Dashboard Configuration ---
+dashboard:
+  api_url: "http://localhost:8000"
+  refresh_interval: 30  # seconds
+  theme: "dark"
+
+# --- Logging Configuration ---
+logging:
+  level: "INFO"
+  format: "json"
+  log_dir: "logs"
