@@ -60,6 +60,7 @@ class TestDataPreprocessing:
         from src.data.preprocess import clean_data
         
         df = create_sample_data()
+        df["TotalCharges"] = df["TotalCharges"].astype(object)
         # Introduce a blank TotalCharges
         df.loc[0, "TotalCharges"] = ""
         

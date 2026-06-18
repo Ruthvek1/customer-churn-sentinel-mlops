@@ -23,10 +23,9 @@ from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
 import yaml
-from evidently import ColumnMapping
-from evidently.report import Report
-from evidently.metric_preset import DataDriftPreset
-from evidently.metrics import (
+from evidently.legacy.report import Report
+from evidently.legacy.metric_preset import DataDriftPreset
+from evidently.legacy.metrics import (
     DataDriftTable,
     DatasetDriftMetric,
 )
