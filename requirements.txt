@@ -1,40 +1,40 @@
 # Core ML
-scikit-learn==1.6.1
-xgboost==2.1.4
-pandas==2.2.3
-numpy==1.26.4
-joblib==1.4.2
+scikit-learn>=1.6
+xgboost>=2.1
+pandas>=2.2
+numpy>=1.26
+joblib>=1.4
 
 # API
-fastapi==0.115.12
-uvicorn[standard]==0.34.2
-pydantic==2.11.3
-pydantic-settings==2.9.1
-python-multipart==0.0.20
+fastapi>=0.115
+uvicorn[standard]>=0.34
+pydantic>=2.11
+pydantic-settings>=2.9
+python-multipart>=0.0.20
 
 # Monitoring & Drift Detection
-evidently==0.6.7
+evidently>=0.5
 
 # Dashboard
-streamlit==1.45.1
-plotly==6.1.2
+streamlit>=1.45
+plotly>=5.24
 
 # Database
-aiosqlite==0.21.0
+aiosqlite>=0.21
 
 # Configuration
-pyyaml==6.0.2
+pyyaml>=6.0
 
 # HTTP Client (for dashboard -> API)
-httpx==0.28.1
-requests==2.32.3
+httpx>=0.28
+requests>=2.32
 
 # Logging
-structlog==25.1.0
+structlog>=25.1
 
 # Testing
-pytest==8.3.5
-pytest-asyncio==0.26.0
+pytest>=8.3
+pytest-asyncio>=0.26
 
 # Code Quality
-ruff==0.11.12
+ruff>=0.11

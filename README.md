@@ -1,10 +1,10 @@
 <div align="center">
 
-# 🔮 Customer Churn Prediction System
+# 🔮 MLOps Churn Sentinel
 
 ### End-to-End ML Pipeline with Production Drift Monitoring
 
-[![CI Pipeline](https://github.com/YOUR_USERNAME/churn-prediction-system/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/churn-prediction-system/actions)
+[![CI Pipeline](https://github.com/Ruthvek1/mlops-churn-sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/Ruthvek1/mlops-churn-sentinel/actions)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-311/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688.svg)](https://fastapi.tiangolo.com/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.1-orange.svg)](https://xgboost.readthedocs.io/)
@@ -85,8 +85,8 @@ Most ML projects stop at `model.fit()`. This one goes further:
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/churn-prediction-system.git
-cd churn-prediction-system
+git clone https://github.com/Ruthvek1/mlops-churn-sentinel.git
+cd mlops-churn-sentinel
 
 # Start everything with one command
 docker-compose up --build
