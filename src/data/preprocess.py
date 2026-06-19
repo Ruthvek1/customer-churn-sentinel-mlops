@@ -10,7 +10,6 @@ Handles:
 - Reproducible sklearn Pipeline construction
 """
 
-import os
 from pathlib import Path
 from typing import Tuple, Optional
 
@@ -19,9 +18,7 @@ import pandas as pd
 import yaml
 import joblib
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline as SklearnPipeline
+from sklearn.preprocessing import LabelEncoder
 
 from src.utils.logger import get_logger
 
@@ -346,7 +343,7 @@ if __name__ == "__main__":
     setup_logging()
     
     X_train, X_test, y_train, y_test, metadata = run_preprocessing_pipeline()
-    print(f"\n✅ Preprocessing complete!")
+    print("\n✅ Preprocessing complete!")
     print(f"   Train: {X_train.shape}, Test: {X_test.shape}")
     print(f"   Features: {metadata['n_features']}")
     print(f"   Churn rate: {metadata['churn_rate']:.2%}")

@@ -83,7 +83,7 @@ Click below to analyze the current prediction data against the training referenc
 Uses **Kolmogorov-Smirnov** test for numerical features and **Chi-squared** test for categorical features.
 """)
 
-if st.button("🔬 Run Drift Analysis", use_container_width=True):
+if st.button("🔬 Run Drift Analysis", width="stretch"):
     try:
         with st.spinner("Running drift detection... This compares your recent predictions against the training data distribution."):
             response = requests.get(f"{API_URL}/drift/report", timeout=30)
@@ -117,7 +117,7 @@ if st.button("🔬 Run Drift Analysis", use_container_width=True):
                     st.markdown("### 📊 Per-Feature Drift Analysis")
                     
                     fig = create_drift_heatmap(feature_details)
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width="stretch")
                     
                     # Detailed table
                     with st.expander("📋 Detailed Feature Drift Scores"):
@@ -131,7 +131,7 @@ if st.button("🔬 Run Drift Analysis", use_container_width=True):
                             }
                             for name, info in feature_details.items()
                         ])
-                        st.dataframe(drift_df, use_container_width=True)
+                        st.dataframe(drift_df, width="stretch")
                 
                 # Report link
                 if drift_result.get("report_path"):
@@ -159,7 +159,7 @@ try:
         
         if history:
             fig = create_drift_trend_chart(history)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
             
             # History table
             with st.expander("📋 Drift Check Log"):
@@ -170,7 +170,7 @@ try:
                     "Features Drifted": h.get("drifted_feature_count", 0),
                     "Total Features": h.get("total_features", 0),
                 } for h in history])
-                st.dataframe(hist_df, use_container_width=True)
+                st.dataframe(hist_df, width="stretch")
         else:
             st.info("No drift checks yet. Run a drift analysis above!")
     else:
@@ -209,3 +209,32 @@ with st.expander("📚 Understanding Data Drift"):
     - **Drift Score 0.1 - 0.5:** Warning — monitor closely
     - **Drift Score > 0.5:** Critical — retraining recommended
     """)
+
+st.markdown("---")
+
+# --- Reset Section ---
+st.markdown("### 🗑️ Reset Data")
+st.markdown("Clear all prediction logs and drift history to start fresh.")
+
+reset_col1, reset_col2 = st.columns([3, 1])
+
+with reset_col1:
+    confirm_reset = st.checkbox("I understand this will permanently delete all prediction logs and drift history.", key="confirm_reset")
+
+with reset_col2:
+    reset_disabled = not confirm_reset
+    if st.button("🗑️ Reset All Data", width="stretch", type="primary", disabled=reset_disabled):
+        try:
+            with st.spinner("Resetting database..."):
+                response = requests.post(f"{API_URL}/drift/reset", timeout=10)
+            
+            if response.status_code == 200:
+                result = response.json()
+                st.success(f"✅ **Database reset!** Cleared {result.get('predictions_cleared', 0)} predictions and {result.get('drift_checks_cleared', 0)} drift checks.")
+                st.rerun()
+            else:
+                st.error(f"Reset failed: {response.text}")
+        except requests.exceptions.ConnectionError:
+            st.error("❌ Cannot connect to API.")
+        except Exception as e:
+            st.error(f"Error: {str(e)}")

@@ -7,7 +7,6 @@ and before/after comparison.
 
 import streamlit as st
 import requests
-import json
 from pathlib import Path
 import sys
 import os
@@ -69,7 +68,7 @@ retrain_reason = st.text_input("Reason for retraining", value="manual",
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("🔄 Retrain Model", use_container_width=True, type="primary"):
+    if st.button("🔄 Retrain Model", width="stretch", type="primary"):
         try:
             with st.spinner("🧠 Retraining model... This may take a minute."):
                 response = requests.post(
@@ -115,7 +114,7 @@ with col1:
             st.error(f"Error: {str(e)}")
 
 with col2:
-    if st.button("📋 Check Retrain Status", use_container_width=True):
+    if st.button("📋 Check Retrain Status", width="stretch"):
         try:
             response = requests.get(f"{API_URL}/retrain/status", timeout=5)
             if response.status_code == 200:
@@ -148,7 +147,7 @@ try:
                 "Status": h.get("status", ""),
             } for h in history])
             
-            st.dataframe(hist_df, use_container_width=True)
+            st.dataframe(hist_df, width="stretch")
             
             # Compare old vs new metrics
             with st.expander("📊 Before/After Comparison"):
@@ -196,7 +195,7 @@ if models_dir.exists():
             "Modified": str(pd.Timestamp(f.stat().st_mtime, unit='s'))[:19],
         } for f in model_files])
         
-        st.dataframe(files_df, use_container_width=True)
+        st.dataframe(files_df, width="stretch")
     else:
         st.info("No model artifacts found. Train a model first!")
 else:

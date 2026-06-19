@@ -15,13 +15,12 @@ from pathlib import Path
 from typing import Dict, Optional, Tuple
 
 import joblib
-import numpy as np
 import pandas as pd
 import yaml
 from sklearn.model_selection import RandomizedSearchCV, StratifiedKFold
 from xgboost import XGBClassifier
 
-from src.model.evaluate import evaluate_model, get_classification_metrics
+from src.model.evaluate import get_classification_metrics
 from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -279,7 +278,7 @@ if __name__ == "__main__":
     print("🧠 Step 2: Training model...")
     model, experiment = train_model(X_train, y_train, X_test, y_test, tune=True)
     
-    print(f"\n✅ Training complete!")
+    print("\n✅ Training complete!")
     print(f"   Accuracy:  {experiment['metrics']['accuracy']:.4f}")
     print(f"   ROC-AUC:   {experiment['metrics']['roc_auc']:.4f}")
     print(f"   F1 Score:  {experiment['metrics']['f1_score']:.4f}")

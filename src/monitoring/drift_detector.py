@@ -19,12 +19,11 @@ Why Evidently?
 
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional
 
 import pandas as pd
 import yaml
 from evidently.legacy.report import Report
-from evidently.legacy.metric_preset import DataDriftPreset
 from evidently.legacy.metrics import (
     DataDriftTable,
     DatasetDriftMetric,

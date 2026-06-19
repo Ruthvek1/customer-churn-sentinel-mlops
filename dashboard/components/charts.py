@@ -5,11 +5,9 @@ Uses Plotly for interactive, professional-looking visualizations
 that make the dashboard impressive on GitHub screenshots.
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List
 
-import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 
 # --- Color Palette ---
@@ -157,7 +155,7 @@ def create_prediction_history_chart(predictions: List[Dict]) -> go.Figure:
     labels = [p.get("risk_level", "LOW") for p in predictions]
     
     color_map = {"HIGH": COLORS["danger"], "MEDIUM": COLORS["warning"], "LOW": COLORS["success"]}
-    colors = [color_map.get(l, COLORS["info"]) for l in labels]
+    colors = [color_map.get(lbl, COLORS["info"]) for lbl in labels]
     
     fig = go.Figure()
     
@@ -167,7 +165,7 @@ def create_prediction_history_chart(predictions: List[Dict]) -> go.Figure:
         mode="lines+markers",
         marker=dict(color=colors, size=8),
         line=dict(color=COLORS["primary"], width=2),
-        text=[f"Risk: {l} | Prob: {p:.2%}" for l, p in zip(labels, probabilities)],
+        text=[f"Risk: {lbl} | Prob: {p:.2%}" for lbl, p in zip(labels, probabilities)],
         hoverinfo="text",
     ))
     

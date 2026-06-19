@@ -58,7 +58,7 @@ async def health_check():
             model_version=model_info.get("version", "unknown"),
             uptime_seconds=round(time.time() - app_start_time, 2)
         )
-    except Exception as e:
+    except Exception:
         return HealthResponse(
             status="unhealthy",
             model_loaded=False,
@@ -177,3 +177,28 @@ async def get_drift_history(limit: int = 20):
         history=history,
         total=len(history)
     )
+
+
+@router.post("/drift/reset")
+async def reset_drift_data():
+    """
+    Reset all prediction logs and drift check history.
+    
+    Clears the database so drift detection starts fresh.
+    """
+    from src.api.main import get_prediction_logger
+    
+    try:
+        pred_logger = get_prediction_logger()
+        result = pred_logger.reset_database()
+        
+        logger.info("drift_data_reset", **result)
+        
+        return {
+            "status": "success",
+            "message": "All prediction logs and drift history cleared.",
+            **result,
+        }
+    except Exception as e:
+        logger.error("reset_failed", error=str(e))
+        raise HTTPException(status_code=500, detail=f"Reset failed: {str(e)}")

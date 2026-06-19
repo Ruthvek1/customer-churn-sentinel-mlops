@@ -8,11 +8,10 @@ This closes the MLOps loop:
 Data Drift Detected → Alert → Retrain → Deploy → Monitor → ...
 """
 
-import json
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict
 
 import yaml
 

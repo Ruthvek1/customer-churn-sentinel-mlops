@@ -348,3 +348,35 @@ class PredictionLogger:
             results.append(result)
         
         return results
+
+    def reset_database(self) -> Dict:
+        """
+        Clear all predictions and drift check history.
+        
+        Returns:
+            Dictionary with counts of deleted records.
+        """
+        conn = sqlite3.connect(str(self.db_path))
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT COUNT(*) FROM predictions")
+        predictions_count = cursor.fetchone()[0]
+        
+        cursor.execute("SELECT COUNT(*) FROM drift_checks")
+        drift_count = cursor.fetchone()[0]
+        
+        cursor.execute("DELETE FROM predictions")
+        cursor.execute("DELETE FROM drift_checks")
+        conn.commit()
+        conn.close()
+        
+        logger.info(
+            "database_reset",
+            predictions_cleared=predictions_count,
+            drift_checks_cleared=drift_count,
+        )
+        
+        return {
+            "predictions_cleared": predictions_count,
+            "drift_checks_cleared": drift_count,
+        }

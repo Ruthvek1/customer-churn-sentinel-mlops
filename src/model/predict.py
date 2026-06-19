@@ -9,11 +9,10 @@ Handles:
 """
 
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 import joblib
 import numpy as np
-import pandas as pd
 import yaml
 
 from src.data.preprocess import preprocess_single_input

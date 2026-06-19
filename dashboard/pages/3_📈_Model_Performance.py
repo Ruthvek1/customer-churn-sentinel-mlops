@@ -14,9 +14,7 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from dashboard.components.charts import (
-    create_confusion_matrix_chart,
     create_feature_importance_chart,
-    create_roc_curve_chart,
 )
 
 st.set_page_config(page_title="Model Performance", page_icon="📈", layout="wide")
@@ -99,7 +97,7 @@ try:
                     for k, v in list(fi.items())[:15]
                 ]
                 fig = create_feature_importance_chart(features_list)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
         
         with viz_col2:
             st.markdown("### 📋 Training Details")
@@ -156,7 +154,7 @@ try:
                 "Training Time": f"{exp.get('training_time_seconds', 0)}s",
             } for exp in reversed(history)])
             
-            st.dataframe(hist_df, use_container_width=True)
+            st.dataframe(hist_df, width="stretch")
         else:
             st.info("No experiments recorded yet.")
     else:

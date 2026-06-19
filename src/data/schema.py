@@ -8,7 +8,7 @@ of the pipeline — from raw input to API request/response.
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 # --- Enums for categorical features ---

@@ -4,7 +4,6 @@ Pydantic schemas for FastAPI request/response models.
 Ensures type-safe API contracts with automatic OpenAPI documentation.
 """
 
-from datetime import datetime
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
@@ -15,25 +14,27 @@ from pydantic import BaseModel, Field
 class CustomerPredictionRequest(BaseModel):
     """Request body for single customer prediction."""
     
-    gender: str = Field(..., example="Female")
-    SeniorCitizen: int = Field(..., ge=0, le=1, example=0)
-    Partner: str = Field(..., example="Yes")
-    Dependents: str = Field(..., example="No")
-    tenure: int = Field(..., ge=0, example=1)
-    PhoneService: str = Field(..., example="No")
-    MultipleLines: str = Field(..., example="No phone service")
-    InternetService: str = Field(..., example="DSL")
-    OnlineSecurity: str = Field(..., example="No")
-    OnlineBackup: str = Field(..., example="Yes")
-    DeviceProtection: str = Field(..., example="No")
-    TechSupport: str = Field(..., example="No")
-    StreamingTV: str = Field(..., example="No")
-    StreamingMovies: str = Field(..., example="No")
-    Contract: str = Field(..., example="Month-to-month")
-    PaperlessBilling: str = Field(..., example="Yes")
-    PaymentMethod: str = Field(..., example="Electronic check")
-    MonthlyCharges: float = Field(..., ge=0, example=29.85)
-    TotalCharges: float = Field(..., ge=0, example=29.85)
+    model_config = {"json_schema_extra": {"examples": [{"gender": "Female", "SeniorCitizen": 0, "Partner": "Yes", "Dependents": "No", "tenure": 1, "PhoneService": "No", "MultipleLines": "No phone service", "InternetService": "DSL", "OnlineSecurity": "No", "OnlineBackup": "Yes", "DeviceProtection": "No", "TechSupport": "No", "StreamingTV": "No", "StreamingMovies": "No", "Contract": "Month-to-month", "PaperlessBilling": "Yes", "PaymentMethod": "Electronic check", "MonthlyCharges": 29.85, "TotalCharges": 29.85}]}}
+    
+    gender: str
+    SeniorCitizen: int = Field(..., ge=0, le=1)
+    Partner: str
+    Dependents: str
+    tenure: int = Field(..., ge=0)
+    PhoneService: str
+    MultipleLines: str
+    InternetService: str
+    OnlineSecurity: str
+    OnlineBackup: str
+    DeviceProtection: str
+    TechSupport: str
+    StreamingTV: str
+    StreamingMovies: str
+    Contract: str
+    PaperlessBilling: str
+    PaymentMethod: str
+    MonthlyCharges: float = Field(..., ge=0)
+    TotalCharges: float = Field(..., ge=0)
 
 
 class PredictionResponse(BaseModel):
@@ -70,7 +71,9 @@ class PredictionHistoryResponse(BaseModel):
 class HealthResponse(BaseModel):
     """Health check response."""
     
-    status: str = Field(..., example="healthy")
+    model_config = {"json_schema_extra": {"examples": [{"status": "healthy", "model_loaded": True, "database_connected": True, "model_version": "v1.0", "uptime_seconds": 120.5}]}}
+    
+    status: str
     model_loaded: bool
     database_connected: bool
     model_version: str = Field(default="unknown")

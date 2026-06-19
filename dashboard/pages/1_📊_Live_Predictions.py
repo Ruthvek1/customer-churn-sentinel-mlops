@@ -66,7 +66,7 @@ with col3:
 st.markdown("---")
 
 # --- Predict Button ---
-if st.button("🔮 Predict Churn", use_container_width=True):
+if st.button("🔮 Predict Churn", width="stretch"):
     payload = {
         "gender": gender,
         "SeniorCitizen": senior_citizen,
@@ -101,15 +101,15 @@ if st.button("🔮 Predict Churn", use_container_width=True):
             
             with res_col1:
                 fig = create_churn_gauge(result["churn_probability"])
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             
             with res_col2:
                 st.markdown("### Result")
                 
                 if result["prediction"] == 1:
-                    st.error(f"⚠️ **WILL CHURN**")
+                    st.error("⚠️ **WILL CHURN**")
                 else:
-                    st.success(f"✅ **WON'T CHURN**")
+                    st.success("✅ **WON'T CHURN**")
                 
                 st.metric("Probability", f"{result['churn_probability']:.1%}")
                 st.metric("Risk Level", result["risk_level"])
@@ -142,7 +142,7 @@ try:
     if response.status_code == 200:
         data = response.json()
         fig = create_feature_importance_chart(data.get("features", []))
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     else:
         st.info("Feature importance will appear after the model is loaded.")
 except Exception:
@@ -164,14 +164,14 @@ try:
             
             with hist_col1:
                 fig = create_prediction_history_chart(predictions)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             
             with hist_col2:
                 stats_resp = requests.get(f"{API_URL}/predictions/stats", timeout=5)
                 if stats_resp.status_code == 200:
                     stats = stats_resp.json()
                     fig = create_risk_distribution_chart(stats)
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width="stretch")
             
             # History table
             with st.expander("View Raw Data"):
@@ -181,7 +181,7 @@ try:
                     "Probability": f"{p.get('churn_probability', 0):.2%}",
                     "Risk": p.get("risk_level", ""),
                 } for p in predictions])
-                st.dataframe(df, use_container_width=True)
+                st.dataframe(df, width="stretch")
         else:
             st.info("No predictions yet. Make a prediction above!")
     else:
